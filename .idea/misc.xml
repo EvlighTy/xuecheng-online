@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/xuecheng-online-parent/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-base/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-content/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-content/xuecheng-online-content-model/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-content/xuecheng-online-content-service/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-content/xuecheng-online-content-api/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-generator/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-system/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-plus-system-api/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-plus-system-service/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-plus-system-model/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-plus-system/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-plus-system/xuecheng-plus-system-api/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-plus-system/xuecheng-plus-system-model/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-plus-system/xuecheng-plus-system-service/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-online-system-api/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-online-system-model/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-online-system-service/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_20" project-jdk-name="corretto-1.8" project-jdk-type="JavaSDK" />
+</project>

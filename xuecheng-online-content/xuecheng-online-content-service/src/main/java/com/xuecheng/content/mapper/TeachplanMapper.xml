@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuecheng.content.mapper.TeachplanMapper">
+
+    <!-- 分页查询映射结果 -->
+    <resultMap id="TeachPlanVOResultMap" type="com.xuecheng.content.model.pojo.vo.TeachPlanVO">
+        <id column="parent_id" property="id" />
+        <result column="parent_pname" property="pname" />
+        <result column="parent_parentid" property="parentid" />
+        <result column="parent_grade" property="grade" />
+        <result column="parent_media_type" property="mediaType" />
+        <result column="parent_start_time" property="startTime" />
+        <result column="parent_end_time" property="endTime" />
+        <result column="parent_description" property="description" />
+        <result column="parent_timelength" property="timelength" />
+        <result column="parent_orderby" property="orderby" />
+        <result column="parent_course_id" property="courseId" />
+        <result column="parent_course_pub_id" property="coursePubId" />
+        <result column="parent_status" property="status" />
+        <result column="parent_is_preview" property="isPreview" />
+        <result column="parent_create_date" property="createDate" />
+        <result column="parent_change_date" property="changeDate" />
+        <association property="teachplanMedia" javaType="com.xuecheng.content.model.pojo.entity.TeachplanMedia">
+            <id column="media_id" property="id" />
+            <result column="media_media_id" property="mediaId" />
+            <result column="media_teachplan_id" property="teachplanId" />
+            <result column="media_course_id" property="courseId" />
+            <result column="media_media_fileName" property="mediaFilename" />
+            <result column="media_create_date" property="createDate" />
+            <result column="media_create_people" property="createPeople" />
+            <result column="media_change_people" property="changePeople" />
+        </association>
+        <collection property="teachPlanTreeNodes" ofType="com.xuecheng.content.model.pojo.vo.TeachPlanVO">
+            <id column="child_id" property="id" />
+            <result column="child_pname" property="pname" />
+            <result column="child_parentid" property="parentid" />
+            <result column="child_grade" property="grade" />
+            <result column="child_media_type" property="mediaType" />
+            <result column="child_start_time" property="startTime" />
+            <result column="child_end_time" property="endTime" />
+            <result column="child_description" property="description" />
+            <result column="child_timelength" property="timelength" />
+            <result column="child_orderby" property="orderby" />
+            <result column="child_course_id" property="courseId" />
+            <result column="child_course_pub_id" property="coursePubId" />
+            <result column="child_status" property="status" />
+            <result column="child_is_preview" property="isPreview" />
+            <result column="child_create_date" property="createDate" />
+            <result column="child_change_date" property="changeDate" />
+        </collection>
+    </resultMap>
+
+    <!--分页查询-->
+    <select id="getList" resultMap="TeachPlanVOResultMap">
+        SELECT
+            parent.id as parent_id,
+            parent.pname as parent_pname,
+            parent.parentid as parent_parentid,
+            parent.grade as parent_grade,
+            parent.media_type as parent_media_type,
+            parent.start_time as parent_start_time,
+            parent.end_time as parent_end_time,
+            parent.description as parent_description,
+            parent.timelength as parent_timelength,
+            parent.orderby as parent_orderby,
+            parent.course_id as parent_course_id,
+            parent.course_pub_id as parent_course_pub_id,
+            parent.status as parent_status,
+            parent.is_preview as parent_is_preview,
+            parent.create_date as parent_create_date,
+            parent.change_date as parent_change_date,
+
+            media.id as media_id,
+            media.media_id as media_media_id,
+            media.teachplan_id as media_teachplan_id,
+            media.course_id as media_course_id,
+            media.media_fileName as media_media_fileName,
+            media.create_date as media_create_date,
+            media.create_people as media_create_people,
+            media.change_people as media_change_people,
+
+            child.id as child_id,
+            child.pname as child_pname,
+            child.parentid as child_parentid,
+            child.grade as child_grade,
+            child.media_type as child_media_type,
+            child.start_time as child_start_time,
+            child.end_time as child_end_time,
+            child.description as child_description,
+            child.timelength as child_timelength,
+            child.orderby as child_orderby,
+            child.course_id as child_course_id,
+            child.course_pub_id as child_course_pub_id,
+            child.status as child_status,
+            child.is_preview as child_is_preview,
+            child.create_date as child_create_date,
+            child.change_date as child_change_date
+        from teachplan as parent
+        left join teachplan as child on child.parentid = parent.id
+        left join teachplan_media as media on media.teachplan_id = child.id
+        where parent.course_id = #{id} and parent.parentid = 0
+        order by parent.orderby, child.orderby;
+    </select>
+
+</mapper>
