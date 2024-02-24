@@ -2,6 +2,7 @@ package com.xuecheng.content.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xuecheng.content.model.pojo.entity.CoursePublish;
+import com.xuecheng.content.model.pojo.vo.CoursePreviewVO;
 
 /**
  * <p>
@@ -13,4 +14,9 @@ import com.xuecheng.content.model.pojo.entity.CoursePublish;
  */
 public interface CoursePublishService extends IService<CoursePublish> {
 
+    CoursePreviewVO preview(Long courseId);
+
+    void commitAudit(Long courseId);
+
+    void coursePublish(Long courseId);
 }

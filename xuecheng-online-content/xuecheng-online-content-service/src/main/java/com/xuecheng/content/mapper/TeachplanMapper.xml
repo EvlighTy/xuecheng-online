@@ -20,16 +20,6 @@
         <result column="parent_is_preview" property="isPreview" />
         <result column="parent_create_date" property="createDate" />
         <result column="parent_change_date" property="changeDate" />
-        <association property="teachplanMedia" javaType="com.xuecheng.content.model.pojo.entity.TeachplanMedia">
-            <id column="media_id" property="id" />
-            <result column="media_media_id" property="mediaId" />
-            <result column="media_teachplan_id" property="teachplanId" />
-            <result column="media_course_id" property="courseId" />
-            <result column="media_media_fileName" property="mediaFilename" />
-            <result column="media_create_date" property="createDate" />
-            <result column="media_create_people" property="createPeople" />
-            <result column="media_change_people" property="changePeople" />
-        </association>
         <collection property="teachPlanTreeNodes" ofType="com.xuecheng.content.model.pojo.vo.TeachPlanVO">
             <id column="child_id" property="id" />
             <result column="child_pname" property="pname" />
@@ -47,6 +37,16 @@
             <result column="child_is_preview" property="isPreview" />
             <result column="child_create_date" property="createDate" />
             <result column="child_change_date" property="changeDate" />
+            <association property="teachplanMedia" javaType="com.xuecheng.content.model.pojo.entity.TeachplanMedia">
+                <id column="media_id" property="id" />
+                <result column="media_media_id" property="mediaId" />
+                <result column="media_teachplan_id" property="teachplanId" />
+                <result column="media_course_id" property="courseId" />
+                <result column="media_media_fileName" property="mediaFilename" />
+                <result column="media_create_date" property="createDate" />
+                <result column="media_create_people" property="createPeople" />
+                <result column="media_change_people" property="changePeople" />
+            </association>
         </collection>
     </resultMap>
 

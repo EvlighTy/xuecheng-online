@@ -9,8 +9,8 @@
     </parent>
     <artifactId>xuecheng-online-content-model</artifactId>
 
-
     <dependencies>
+
         <dependency>
             <groupId>com.xuecheng</groupId>
             <artifactId>xuecheng-online-base</artifactId>

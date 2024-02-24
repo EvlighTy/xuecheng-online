@@ -26,4 +26,6 @@ public interface CourseBaseService extends IService<CourseBase> {
     CourseBaseInfoVO get(Long id);
 
     CourseBaseInfoVO edit(EditCourseDTO editCourseDTO);
+
+    void delete(Long id);
 }

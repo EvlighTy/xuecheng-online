@@ -1,29 +1,30 @@
 package com.xuecheng.content.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xuecheng.base.constant.CourseExMsg;
 import com.xuecheng.base.constant.ExMsgConstant;
 import com.xuecheng.base.enumeration.CourseAuditStatus;
 import com.xuecheng.base.enumeration.CourseStatus;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.result.PageResult;
-import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.mapper.CourseCategoryMapper;
-import com.xuecheng.content.mapper.CourseMarketMapper;
+import com.xuecheng.content.mapper.*;
 import com.xuecheng.content.model.pojo.dto.AddCourseDTO;
 import com.xuecheng.content.model.pojo.dto.CourseQueryDTO;
 import com.xuecheng.content.model.pojo.dto.EditCourseDTO;
-import com.xuecheng.content.model.pojo.entity.CourseBase;
-import com.xuecheng.content.model.pojo.entity.CourseMarket;
+import com.xuecheng.content.model.pojo.entity.*;
 import com.xuecheng.content.model.pojo.vo.CourseBaseInfoVO;
 import com.xuecheng.content.service.CourseBaseService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -41,6 +42,15 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
 
     @Autowired
     private CourseCategoryMapper courseCategoryMapper;
+
+    @Autowired
+    private TeachplanMapper teachplanMapper;
+
+    @Autowired
+    private TeachplanMediaMapper teachplanMediaMapper;
+
+    @Autowired
+    private CourseTeacherMapper courseTeacherMapper;
 
     //分页查询课程
     @Override
@@ -110,10 +120,11 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
     @Override
     public CourseBaseInfoVO edit(EditCourseDTO editCourseDTO) {
         //获取机构id
-        Long companyId=123L;
-        //业务逻辑校验
+        long companyId = 1232141425L;
         CourseBase courseBase = getById(editCourseDTO.getId());
-        if(courseBase==null) throw new CustomException(ExMsgConstant.COURSE_IS_NULL);
+        /*业务逻辑校验(课程存在)*/
+        if(courseBase==null) throw new CustomException(CourseExMsg.COURSE_NO_EXIST);
+        /*业务逻辑校验(课程所属机构一致)*/
         if(!courseBase.getCompanyId().equals(companyId)) throw new CustomException(ExMsgConstant.AUTHORITY_LIMIT);
         //封装数据
         BeanUtil.copyProperties(editCourseDTO,courseBase);
@@ -127,8 +138,36 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
         return get(editCourseDTO.getId());
     }
 
+    //删除课程
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        CourseBase courseBase = getById(id);
+        //删除基本信息
+        boolean removeCourseBase = removeById(id);
+        //删除营销信息
+        int deleteCourseMarket = courseMarketMapper.deleteById(courseBase.getId());
+        //删除课程计划
+        LambdaQueryWrapper<Teachplan> queryWrapperTeachPlan = new LambdaQueryWrapper<Teachplan>()
+                .eq(Teachplan::getCourseId, id);
+        List<Long> teachPlanIds = teachplanMapper.selectList(queryWrapperTeachPlan).stream().map(Teachplan::getId).collect(Collectors.toList());
+        int deleteTeachPlan = teachplanMapper.delete(queryWrapperTeachPlan);
+        //删除媒资
+        LambdaQueryWrapper<TeachplanMedia> queryWrapperTeachPlanMedia = new LambdaQueryWrapper<TeachplanMedia>()
+                .in(TeachplanMedia::getTeachplanId, teachPlanIds);
+        int deleteTeachPlaneMedia = teachplanMediaMapper.delete(queryWrapperTeachPlanMedia);
+        //删除教师
+        LambdaQueryWrapper<CourseTeacher> queryWrapperTeacher = new LambdaQueryWrapper<CourseTeacher>()
+                .eq(CourseTeacher::getCourseId, id);
+        int deleteTeacher = courseTeacherMapper.delete(queryWrapperTeacher);
+        if(!(removeCourseBase
+                && deleteCourseMarket==1
+                && deleteTeachPlan==1
+                && deleteTeachPlaneMedia==1
+                && deleteTeacher==1)) throw new CustomException(ExMsgConstant.DELETE_FAILED);
+    }
 
-    //参数合法性校验
+    /*//参数合法性校验
     private static void paramsCheck(AddCourseDTO addCourseDTO) {
         if(StringUtils.isEmpty(addCourseDTO.getName())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_NAME);
         if(addCourseDTO.getPrice()==null) throw new CustomException(ExMsgConstant.EMPTY_COURSE_PRICE);
@@ -139,6 +178,6 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
         if(StringUtils.isEmpty(addCourseDTO.getGrade())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_RANK);
         if(StringUtils.isEmpty(addCourseDTO.getPic())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_PICTURE);
         if(StringUtils.isEmpty(addCourseDTO.getTeachmode())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_TEACH_MODE);
-    }
+    }*/
 
 }

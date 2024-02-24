@@ -14,7 +14,11 @@ public enum CourseStatus {
     private final String value;
 
     CourseStatus(String value) {
-        this.value=value;
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 
 }

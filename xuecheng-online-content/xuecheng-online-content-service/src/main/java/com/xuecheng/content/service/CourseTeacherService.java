@@ -1,7 +1,10 @@
 package com.xuecheng.content.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xuecheng.content.model.pojo.dto.AddCourseTeacherDTO;
 import com.xuecheng.content.model.pojo.entity.CourseTeacher;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,11 @@ import com.xuecheng.content.model.pojo.entity.CourseTeacher;
  */
 public interface CourseTeacherService extends IService<CourseTeacher> {
 
+    List<CourseTeacher> getList(Long id);
+
+    CourseTeacher add(AddCourseTeacherDTO addCourseTeacherDTO);
+
+    CourseTeacher edit(CourseTeacher courseTeacher);
+
+    void delete(Long courseId, Long teacherId);
 }

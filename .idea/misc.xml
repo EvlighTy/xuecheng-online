@@ -22,6 +22,10 @@
         <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-online-system-api/pom.xml" />
         <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-online-system-model/pom.xml" />
         <option value="$PROJECT_DIR$/xuecheng-online-system/xuecheng-online-system-service/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-media/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-plus-message-sdk/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-message-sdk/pom.xml" />
       </list>
     </option>
   </component>

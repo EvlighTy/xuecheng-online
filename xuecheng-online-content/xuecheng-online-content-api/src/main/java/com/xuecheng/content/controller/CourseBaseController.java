@@ -59,9 +59,13 @@ public class CourseBaseController {
     @PutMapping
     public CourseBaseInfoVO edit(@RequestBody EditCourseDTO editCourseDTO){
         log.info("修改课程");
-//        CourseBaseInfoVO courseBaseInfoVO = courseBaseService.edit(editCourseDTO);
-        CourseBaseInfoVO courseBaseInfoVO = new CourseBaseInfoVO();
-        courseBaseInfoVO.setId(editCourseDTO.getId());
+        CourseBaseInfoVO courseBaseInfoVO = courseBaseService.edit(editCourseDTO);
         return courseBaseInfoVO;
+    }
+
+    @DeleteMapping("/{id}")
+    public Result<String> delete(Long id){
+       courseBaseService.delete(id);
+       return Result.success("删除课程成功");
     }
 }

@@ -8,27 +8,34 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
       </profile>
-      <profile name="Annotation profile for xuecheng-online-system" enabled="true">
+      <profile name="Annotation profile for xuecheng-online-content" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/Downloads/apache-maven-3.9.5/lib/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar" />
         </processorPath>
-        <module name="xuecheng-online-content-service" />
+        <module name="xuecheng-online-gateway" />
         <module name="xuecheng-online-content-api" />
         <module name="xuecheng-online-base" />
         <module name="xuecheng-online-system-api" />
+        <module name="xuecheng-online-media-api" />
+        <module name="xuecheng-online-message-sdk" />
+        <module name="xuecheng-online-content-service" />
         <module name="xuecheng-online-content-model" />
         <module name="xuecheng-online-system-model" />
         <module name="xuecheng-online-system-service" />
         <module name="xuecheng-online-generator" />
+        <module name="xuecheng-online-media-model" />
+        <module name="xuecheng-online-media-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="xuecheng-plus-content" target="1.8" />
       <module name="xuecheng-plus-content-model" target="1.8" />
+      <module name="xuecheng-plus-gateway" target="1.8" />
       <module name="xuecheng-plus-generator" target="1.5" />
+      <module name="xuecheng-plus-media" target="1.5" />
       <module name="xuecheng-plus-parent" target="1.8" />
       <module name="xuecheng-plus-system" target="1.8" />
       <module name="xuecheng-plus-system-api" target="1.8" />

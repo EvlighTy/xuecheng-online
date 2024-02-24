@@ -19,6 +19,10 @@ public enum CourseAuditStatus {
         this.value = value;
     }
 
+    public String getValue() {
+        return value;
+    }
+
 /*    public static CourseAuditStatus fromValue(String value) {
         for (CourseAuditStatus status : CourseAuditStatus.values()) {
             if (status.getValue().equalsIgnoreCase(value)) {
