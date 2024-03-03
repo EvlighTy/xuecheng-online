@@ -19,8 +19,7 @@ import java.util.concurrent.*;
 public abstract class MessageProcessAbstract {
 
     @Autowired
-    MqMessageService mqMessageService;
-
+    private MqMessageService mqMessageService;
 
     /**
      * @param mqMessage 执行任务内容
@@ -30,7 +29,6 @@ public abstract class MessageProcessAbstract {
      * @date 2022/9/21 19:47
      */
     public abstract boolean execute(MqMessage mqMessage);
-
 
     /**
      * @description 扫描消息表多线程执行任务
@@ -44,17 +42,13 @@ public abstract class MessageProcessAbstract {
      * @date 2022/9/21 20:35
     */
     public void process(int shardIndex, int shardTotal,  String messageType,int count,long timeout) {
-
         try {
             //扫描消息表获取任务清单
             List<MqMessage> messageList = mqMessageService.getMessageList(shardIndex, shardTotal,messageType, count);
             //任务个数
             int size = messageList.size();
             log.debug("取出待处理消息"+size+"条");
-            if(size<=0){
-                return ;
-            }
-
+            if(size == 0) return;
             //创建线程池
             ExecutorService threadPool = Executors.newFixedThreadPool(size);
             //计数器

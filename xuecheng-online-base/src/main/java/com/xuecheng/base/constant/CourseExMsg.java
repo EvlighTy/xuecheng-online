@@ -13,5 +13,7 @@ public class CourseExMsg {
     public static final String EMPTY_COURSE_TEACH_PLAN="课程计划不能为空";
     public static final String EMPTY_COURSE_PICTURE="课程图片不能为空";
     public static final String CHILD_CHAPTER_EXIST="该课程章节存在子章节";
+    public static final String COURSE_HTML_FAILED="课程页面静态化失败";
+    public static final String ADD_COURSE_INDEX_FAILED="添加课程文档失败";
     public static final String COURSE_NO_EXIST="课程不存在";
 }

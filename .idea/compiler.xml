@@ -8,7 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
       </profile>
-      <profile name="Annotation profile for xuecheng-online-content" enabled="true">
+      <profile name="Annotation profile for xuecheng-online-checkcode" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -21,16 +21,21 @@
         <module name="xuecheng-online-system-api" />
         <module name="xuecheng-online-media-api" />
         <module name="xuecheng-online-message-sdk" />
+        <module name="xuecheng-online-auth" />
+        <module name="xuecheng-online-checkcode" />
         <module name="xuecheng-online-content-service" />
         <module name="xuecheng-online-content-model" />
         <module name="xuecheng-online-system-model" />
         <module name="xuecheng-online-system-service" />
+        <module name="xuecheng-online-search" />
         <module name="xuecheng-online-generator" />
         <module name="xuecheng-online-media-model" />
         <module name="xuecheng-online-media-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="xuecheng-plus-auth" target="1.5" />
+      <module name="xuecheng-plus-checkcode" target="1.5" />
       <module name="xuecheng-plus-content" target="1.8" />
       <module name="xuecheng-plus-content-model" target="1.8" />
       <module name="xuecheng-plus-gateway" target="1.8" />

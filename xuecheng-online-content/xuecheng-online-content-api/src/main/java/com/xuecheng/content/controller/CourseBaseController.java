@@ -3,6 +3,7 @@ package com.xuecheng.content.controller;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.result.PageResult;
 import com.xuecheng.base.model.result.Result;
+import com.xuecheng.base.utils.SecurityUtil;
 import com.xuecheng.content.model.pojo.dto.AddCourseDTO;
 import com.xuecheng.content.model.pojo.dto.CourseQueryDTO;
 import com.xuecheng.content.model.pojo.dto.EditCourseDTO;
@@ -11,6 +12,7 @@ import com.xuecheng.content.model.pojo.vo.CourseBaseInfoVO;
 import com.xuecheng.content.service.CourseBaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j
 @RestController
-@RequestMapping("course")
+@RequestMapping("/course")
 public class CourseBaseController {
 
     @Autowired
@@ -42,6 +44,7 @@ public class CourseBaseController {
         return pageResult;
     }
 
+    @PreAuthorize("hasAnyAuthority('xc_teachmanager_course')")
     @PostMapping
     public CourseBaseInfoVO add(@RequestBody @Validated AddCourseDTO addCourseDTO){
         log.info("添加课程");
@@ -49,8 +52,10 @@ public class CourseBaseController {
         return courseBaseInfoVO;
     }
 
+
     @GetMapping("/{id}")
     public CourseBaseInfoVO get(@PathVariable Long id){
+        SecurityUtil.XcUser user = SecurityUtil.getUser();
         log.info("查询课程");
         CourseBaseInfoVO courseBaseInfoVO = courseBaseService.get(id);
         return courseBaseInfoVO;

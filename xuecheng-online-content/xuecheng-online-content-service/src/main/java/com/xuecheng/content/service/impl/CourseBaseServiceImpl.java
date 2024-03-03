@@ -11,6 +11,7 @@ import com.xuecheng.base.enumeration.CourseStatus;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.result.PageResult;
+import com.xuecheng.base.utils.SecurityUtil;
 import com.xuecheng.content.mapper.*;
 import com.xuecheng.content.model.pojo.dto.AddCourseDTO;
 import com.xuecheng.content.model.pojo.dto.CourseQueryDTO;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -55,6 +57,8 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
     //分页查询课程
     @Override
     public PageResult<CourseBase> getList(PageParams pageParams,CourseQueryDTO courseQueryDTO) {
+        /*业务逻辑校验(只能查询本机构课程)*/
+        String companyId = Objects.requireNonNull(SecurityUtil.getUser()).getCompanyId();
         String courseName = courseQueryDTO.getCourseName();
         String auditStatus = courseQueryDTO.getAuditStatus();
         String publishStatus = courseQueryDTO.getPublishStatus();
@@ -63,6 +67,7 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
                 .like(courseName != null && !courseName.isEmpty(), CourseBase::getName, courseName)
                 .eq(auditStatus != null && !auditStatus.isEmpty(), CourseBase::getAuditStatus, auditStatus)
                 .eq(publishStatus != null && !publishStatus.isEmpty(), CourseBase::getStatus, publishStatus)
+                .eq(CourseBase::getCompanyId,companyId)
                 .page(page);
         return new PageResult<>(result.getTotal(),result.getRecords());
     }

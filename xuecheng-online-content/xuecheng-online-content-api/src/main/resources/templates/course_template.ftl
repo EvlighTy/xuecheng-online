@@ -106,7 +106,7 @@
                         <div class="content-com course">
                             <div class="title"><span>课程制作</span></div>
                             <div class="cont">
-                                <div class="img-box"><img src="/static/img/widget-myImg.jpg" alt=""></div>
+                                <div class="img-box"><img src="/static/img/ljz.jpg" alt=""></div>
                                 <div class="info-box">
                                     <p class="name">教学方：<em>蓝老师</em></p>
                                     <!-- <p class="lab">高级前端开发工程师 10年开发经验</p>-->
@@ -180,7 +180,9 @@
                                 <div class="drop-down" style="height: 260px;">
                                     <ul class="list-box">
                                         <#list firstNode.teachPlanTreeNodes as secondNode>
-                                            <li><a href="http://www.51xuecheng.cn/course/preview/learning.html?id=${model.courseBase.id}&chapter=${secondNode.teachplanMedia.teachplanId!''}" target="_blank">${secondNode.pname}</a></li>
+                                            <#if secondNode.teachplanMedia??>
+                                                <li><a href="http://www.51xuecheng.cn/course/preview/learning.html?id=${model.courseBase.id}&chapter=${secondNode.teachplanMedia.teachplanId!''}" target="_blank">${secondNode.pname}</a></li>
+                                            </#if>
                                         </#list>
                                     </ul>
                                 </div>

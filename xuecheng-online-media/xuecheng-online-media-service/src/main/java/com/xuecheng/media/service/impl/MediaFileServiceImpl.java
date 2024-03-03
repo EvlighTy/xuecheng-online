@@ -73,17 +73,6 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper,MediaFile
     //查询
     @Override
     public PageResult<MediaFiles> queryMediaFiles(Long companyId, PageParams pageParams, QueryMediaParamsDTO queryMediaParamsDto) {
-/*        // 分页对象
-        Page<MediaFiles> page = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
-        //构建查询条件对象
-
-        // 查询数据内容获得结果
-        Page<MediaFiles> pageResult = mediaFilesMapper.selectPage(page, queryWrapper);
-        // 获取数据列表
-        List<MediaFiles> list = pageResult.getRecords();
-        // 获取数据总数
-        long total = pageResult.getTotal();
-        // 构建结果集*/
         String filename = queryMediaParamsDto.getFilename();
         String fileType = queryMediaParamsDto.getType();
         String auditStatus = queryMediaParamsDto.getAuditStatus();
@@ -98,7 +87,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper,MediaFile
 
     //上传图片
     @Override
-    public UploadFileResultVO uploadImage(UploadFileDTO uploadFileDTO, String localFilePath) {
+    public UploadFileResultVO uploadFile(UploadFileDTO uploadFileDTO, String localFilePath, String objectPath) {
         //机构id
         long companyId = 1232141425L;
         //mimeType
@@ -110,15 +99,14 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper,MediaFile
         //md5
         String md5 = getFileMD5(new File(localFilePath));
         //文件路径
-        String objectPath = path + md5 + extension;
+        if(StringUtils.isEmpty(objectPath)) objectPath = path + md5 + extension;
         //上传文件
         boolean uploaded = MinioUtil.uploadMediaFilesToMinIO(localFilePath, mimeType, bucketFiles, objectPath);
         if(!uploaded) throw new CustomException(MinioExMsg.UPLOAD_FAILED);
         //保存文件信息
         MediaFiles mediaFiles = mediaFileService.saveOrGetFileInfo(uploadFileDTO, md5, companyId, objectPath, bucketFiles);
         //封装返回数据
-        UploadFileResultVO uploadFileResultVO = BeanUtil.copyProperties(mediaFiles, UploadFileResultVO.class);
-        return uploadFileResultVO;
+        return BeanUtil.copyProperties(mediaFiles, UploadFileResultVO.class);
     }
 
     //检查文件是否存在

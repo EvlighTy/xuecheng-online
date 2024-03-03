@@ -19,7 +19,7 @@ public interface MediaFileService extends IService<MediaFiles> {
 
     PageResult<MediaFiles> queryMediaFiles(Long companyId, PageParams pageParams, QueryMediaParamsDTO queryMediaParamsDto);
 
-    UploadFileResultVO uploadImage(UploadFileDTO uploadFileDTO, String localFilePath);
+    UploadFileResultVO uploadFile(UploadFileDTO uploadFileDTO, String localFilePath, String objectPath);
 
     MediaFiles saveOrGetFileInfo(UploadFileDTO uploadFileDTO, String md5, long companyId, String objectPath, String bucketName);
 

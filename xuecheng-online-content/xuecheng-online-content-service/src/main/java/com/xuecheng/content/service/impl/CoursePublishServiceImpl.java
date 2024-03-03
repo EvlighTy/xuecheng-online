@@ -2,7 +2,6 @@ package com.xuecheng.content.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xuecheng.base.constant.CourseExMsg;
@@ -10,12 +9,16 @@ import com.xuecheng.base.constant.ExMsgConstant;
 import com.xuecheng.base.enumeration.CourseAuditStatus;
 import com.xuecheng.base.enumeration.CourseStatus;
 import com.xuecheng.base.exception.CustomException;
+import com.xuecheng.content.config.MultipartSupportConfig;
+import com.xuecheng.content.feignClient.MediaServiceClient;
+import com.xuecheng.content.feignClient.SearchServiceClient;
 import com.xuecheng.content.mapper.CoursePublishMapper;
 import com.xuecheng.content.mapper.CoursePublishPreMapper;
 import com.xuecheng.content.model.pojo.entity.CourseBase;
 import com.xuecheng.content.model.pojo.entity.CourseMarket;
 import com.xuecheng.content.model.pojo.entity.CoursePublish;
 import com.xuecheng.content.model.pojo.entity.CoursePublishPre;
+import com.xuecheng.content.model.pojo.feign.CourseIndex;
 import com.xuecheng.content.model.pojo.vo.CourseBaseInfoVO;
 import com.xuecheng.content.model.pojo.vo.CoursePreviewVO;
 import com.xuecheng.content.model.pojo.vo.TeachPlanVO;
@@ -25,12 +28,19 @@ import com.xuecheng.content.service.CoursePublishService;
 import com.xuecheng.content.service.TeachplanService;
 import com.xuecheng.messagesdk.model.po.MqMessage;
 import com.xuecheng.messagesdk.service.MqMessageService;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -58,6 +68,12 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
 
     @Autowired
     private MqMessageService mqMessageService;
+
+    @Autowired
+    private MediaServiceClient mediaServiceClient;
+
+    @Autowired
+    private SearchServiceClient searchServiceClient;
 
     @Override
     public CoursePreviewVO preview(Long courseId) {
@@ -137,6 +153,50 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
     private void saveCoursePublishMessage(Long courseId){
         MqMessage mqMessage = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
         if(mqMessage==null) throw new CustomException(ExMsgConstant.INSERT_FAILED);
+    }
+
+    //生成课程静态页面
+    @Override
+    public File getCourseHtml(Long courseId){
+        File result = null;
+        try {
+            Configuration configuration = new Configuration(Configuration.getVersion());
+            String classPath = getClass().getResource("/").getPath();
+            configuration.setDirectoryForTemplateLoading(new File(classPath+"/templates/"));
+            configuration.setDefaultEncoding("utf-8");
+            Template template = configuration.getTemplate("course_template.ftl");
+            CoursePreviewVO coursePreviewVO = preview(courseId);
+            HashMap<String, CoursePreviewVO> hashMap = new HashMap<>();
+            hashMap.put("model",coursePreviewVO);
+            String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, hashMap);
+            InputStream inputStream = IOUtils.toInputStream(html, "utf-8");
+            result = File.createTempFile("coursePublish", ".html");
+            FileOutputStream fileOutputStream = new FileOutputStream(result);
+            IOUtils.copy(inputStream,fileOutputStream);
+        } catch (Exception e) {
+            log.info("课程页面静态化异常:",e);
+            e.printStackTrace();
+        }
+        if(result==null) throw new CustomException(CourseExMsg.COURSE_HTML_FAILED);
+        return result;
+    }
+
+    //课程静态页面上传至minio
+    @Override
+    public void uploadHtmlToMinio(File file, Long courseId){
+        MultipartFile multipartFile = MultipartSupportConfig.getMultipartFile(file);
+        String result = mediaServiceClient.uploadFile(multipartFile, "course/" + courseId + ".html");
+        if(result==null) throw new CustomException(CourseExMsg.COURSE_HTML_FAILED);
+    }
+
+    //添加课程文档
+    @Override
+    public void addCourseIndex(CourseIndex courseIndex){
+        Boolean result = searchServiceClient.add(courseIndex);
+        if(!result){
+            log.info("添加课程文档失败:[{}]",courseIndex);
+            throw new CustomException(CourseExMsg.ADD_COURSE_INDEX_FAILED);
+        }
     }
 
 }

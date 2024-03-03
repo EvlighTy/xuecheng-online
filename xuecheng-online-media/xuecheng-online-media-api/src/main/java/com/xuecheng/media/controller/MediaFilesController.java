@@ -39,7 +39,8 @@ public class MediaFilesController {
     }
 
     @PostMapping(value = "/upload/coursefile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public UploadFileResultVO uploadImage(@RequestPart("filedata") MultipartFile multipartFile) throws IOException {
+    public UploadFileResultVO uploadFile(@RequestPart("filedata") MultipartFile multipartFile,
+                                         @RequestParam(value = "objectName",required=false) String objectPath) throws IOException {
         log.info("上传课程图片");
         UploadFileDTO uploadFileDTO = UploadFileDTO.builder()
                 .filename(multipartFile.getOriginalFilename())
@@ -47,7 +48,7 @@ public class MediaFilesController {
                 .fileType(FileType.IMAGE.getValue())
                 .build();
         String localFilePath = getLocalFilePath(multipartFile);
-        UploadFileResultVO uploadFileResultVO = mediaFileService.uploadImage(uploadFileDTO,localFilePath);
+        UploadFileResultVO uploadFileResultVO = mediaFileService.uploadFile(uploadFileDTO,localFilePath,objectPath);
         return uploadFileResultVO;
     }
 
