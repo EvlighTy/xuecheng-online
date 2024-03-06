@@ -1,7 +1,6 @@
 package com.xuecheng.media.utils;
 
-import com.xuecheng.base.constant.ExMsgConstant;
-import com.xuecheng.base.constant.MinioExMsg;
+import com.xuecheng.base.exmsg.MinioExMsg;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.media.model.dto.UploadFileDTO;
 import io.minio.*;
@@ -17,10 +16,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

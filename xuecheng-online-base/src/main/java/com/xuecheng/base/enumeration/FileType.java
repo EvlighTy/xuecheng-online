@@ -1,5 +1,6 @@
 package com.xuecheng.base.enumeration;
 
+//资源类型
 public enum FileType {
     IMAGE("001001"),
 

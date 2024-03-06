@@ -1,6 +1,6 @@
 package com.xuecheng.base.handler;
 
-import com.xuecheng.base.constant.ExMsgConstant;
+import com.xuecheng.base.exmsg.CommonExMsg;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.base.model.RestResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     public RestResponse<String> exceptionHandler(Exception ex){
         if(ex.getMessage().equals("不允许访问")) return RestResponse.validfail("您没有操作此功能的权限");
         log.error("未知异常:[{}]", ex.getMessage());
-        return RestResponse.validfail(ExMsgConstant.UNKNOWN);
+        return RestResponse.validfail(CommonExMsg.UNKNOWN);
     }
 
 

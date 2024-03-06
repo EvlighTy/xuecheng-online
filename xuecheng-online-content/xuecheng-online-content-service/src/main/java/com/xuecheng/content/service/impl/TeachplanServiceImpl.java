@@ -2,11 +2,10 @@ package com.xuecheng.content.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xuecheng.base.constant.CourseExMsg;
-import com.xuecheng.base.constant.ExMsgConstant;
-import com.xuecheng.base.constant.TeachPlanExMsg;
+import com.xuecheng.base.exmsg.CommonExMsg;
+import com.xuecheng.base.exmsg.CourseExMsg;
+import com.xuecheng.base.exmsg.TeachPlanExMsg;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.content.mapper.TeachplanMapper;
 import com.xuecheng.content.mapper.TeachplanMediaMapper;
@@ -21,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -135,7 +132,7 @@ public class TeachplanServiceImpl extends ServiceImpl<TeachplanMapper, Teachplan
         LambdaQueryWrapper<TeachplanMedia> queryWrapper1 = new LambdaQueryWrapper<TeachplanMedia>()
                 .eq(TeachplanMedia::getTeachplanId, bindTeachPlanMediaDTO.getTeachplanId());
         teachplanMediaMapper.delete(queryWrapper1);
-//        if(delete!=1) throw new CustomException(ExMsgConstant.DELETE_FAILED);
+//        if(delete!=1) throw new CustomException(CommonExMsg.DELETE_FAILED);
         /*业务逻辑校验教学计划id和媒资id均不能为空*/
         if(bindTeachPlanMediaDTO.getMediaId()==null||bindTeachPlanMediaDTO.getFileName()==null) return;
         /*业务逻辑校验(媒资存在) todo*/
@@ -157,7 +154,7 @@ public class TeachplanServiceImpl extends ServiceImpl<TeachplanMapper, Teachplan
                 .eq(TeachplanMedia::getTeachplanId, teachPlanId)
                 .eq(TeachplanMedia::getMediaId, mediaId);
         int delete = teachplanMediaMapper.delete(queryWrapper);
-        if(delete!=1) throw new CustomException(ExMsgConstant.DELETE_FAILED);
+        if(delete!=1) throw new CustomException(CommonExMsg.DELETE_FAILED);
     }
 
     //交换元素

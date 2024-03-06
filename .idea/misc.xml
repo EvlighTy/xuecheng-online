@@ -32,6 +32,16 @@
         <option value="$PROJECT_DIR$/xuecheng-online-auth/pom.xml" />
         <option value="$PROJECT_DIR$/xuecheng-plus-checkcode/pom.xml" />
         <option value="$PROJECT_DIR$/xuecheng-online-checkcode/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-plus-learning/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-learning/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-api/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-model/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-service/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-plus-orders/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-orders/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-api/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-model/pom.xml" />
+        <option value="$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-service/pom.xml" />
       </list>
     </option>
   </component>

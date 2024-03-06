@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" native2AsciiForPropertiesFiles="true">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/xuecheng-online-auth/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-auth/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-base/src/main/java" charset="UTF-8" />
@@ -19,6 +19,14 @@
     <file url="file://$PROJECT_DIR$/xuecheng-online-gateway/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-generator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-generator/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-learning/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-learning/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-model/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-model/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-learning/xuecheng-online-learning-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-media/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-media/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-media/xuecheng-online-media-api/src/main/java" charset="UTF-8" />
@@ -29,6 +37,14 @@
     <file url="file://$PROJECT_DIR$/xuecheng-online-media/xuecheng-online-media-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-message-sdk/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-message-sdk/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-orders/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-orders/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-model/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-model/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xuecheng-online-orders/xuecheng-online-orders-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-parent/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-parent/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xuecheng-online-search/src/main/java" charset="UTF-8" />

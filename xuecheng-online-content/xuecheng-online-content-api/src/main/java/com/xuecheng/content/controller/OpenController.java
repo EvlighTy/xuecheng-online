@@ -20,8 +20,7 @@ public class OpenController {
     @GetMapping("/course/whole/{courseId}")
     public CoursePreviewVO getPreviewInfo(@PathVariable("courseId") Long courseId) {
         log.info("获取课程预览信息");
-        CoursePreviewVO coursePreviewVO = coursePublishService.preview(courseId);
-        return coursePreviewVO;
+        return coursePublishService.preview(courseId);
     }
 
 }

@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xuecheng.base.constant.ExMsgConstant;
+import com.xuecheng.base.exmsg.CommonExMsg;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.media.mapper.MediaFilesMapper;
 import com.xuecheng.media.mapper.MediaProcessHistoryMapper;
@@ -15,7 +15,6 @@ import com.xuecheng.media.model.po.MediaProcessHistory;
 import com.xuecheng.media.service.MediaProcessService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,7 +73,7 @@ public class MediaProcessServiceImpl extends ServiceImpl<MediaProcessMapper, Med
                     .set(MediaProcess::getFailCount, mediaProcess.getFailCount() + 1)
                     .set(MediaProcess::getErrormsg, failedMessage);
             boolean update = update(updateWrapper);
-            if(!update) throw new CustomException(ExMsgConstant.UPDATE_FAILED);
+            if(!update) throw new CustomException(CommonExMsg.UPDATE_FAILED);
         }else{
             //处理成功
             /*保存历史任务信息*/
@@ -84,7 +83,7 @@ public class MediaProcessServiceImpl extends ServiceImpl<MediaProcessMapper, Med
             mediaProcessHistory.setFinishDate(LocalDateTime.now());
             mediaProcessHistory.setUrl(url);
             int insert = mediaProcessHistoryMapper.insert(mediaProcessHistory);
-            if(insert!=1) throw new CustomException(ExMsgConstant.INSERT_FAILED);
+            if(insert!=1) throw new CustomException(CommonExMsg.INSERT_FAILED);
             /*删除任务信息*/
             removeById(taskId);
             /*更新媒资文件url*/
@@ -92,7 +91,7 @@ public class MediaProcessServiceImpl extends ServiceImpl<MediaProcessMapper, Med
                     .eq(MediaFiles::getFileId, fileId)
                     .set(MediaFiles::getUrl, url);
             int update = mediaFilesMapper.update(null, updateWrapper);
-            if(update!=1) throw new CustomException(ExMsgConstant.UPDATE_FAILED);
+            if(update!=1) throw new CustomException(CommonExMsg.UPDATE_FAILED);
         }
     }
 

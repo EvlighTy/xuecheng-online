@@ -1,19 +1,17 @@
 package com.xuecheng.media.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
-import com.xuecheng.base.constant.ExMsgConstant;
-import com.xuecheng.base.constant.MediaExMsg;
-import com.xuecheng.base.constant.MinioExMsg;
+import com.xuecheng.base.exmsg.CommonExMsg;
+import com.xuecheng.base.exmsg.MediaExMsg;
+import com.xuecheng.base.exmsg.MinioExMsg;
 import com.xuecheng.base.enumeration.ObjectAuditStatus;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.result.PageResult;
-import com.xuecheng.base.utils.StringUtil;
 import com.xuecheng.media.mapper.MediaFilesMapper;
 import com.xuecheng.media.mapper.MediaProcessMapper;
 import com.xuecheng.media.model.dto.QueryMediaParamsDTO;
@@ -202,7 +200,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper,MediaFile
             mediaFiles.setStatus("1");
             mediaFiles.setAuditStatus(ObjectAuditStatus.REVIEW_PASSED.getValue());
             boolean save = save(mediaFiles);
-            if(!save) throw new CustomException(ExMsgConstant.INSERT_FAILED);
+            if(!save) throw new CustomException(CommonExMsg.INSERT_FAILED);
         }
         //记录待处理任务
         addWaitTask(uploadFileDTO, mediaFiles);
@@ -221,7 +219,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper,MediaFile
             mediaProcess.setFailCount(0);
             mediaProcess.setUrl(null);
             int insert = mediaProcessMapper.insert(mediaProcess);
-            if(insert!=1) throw new CustomException(ExMsgConstant.INSERT_FAILED);
+            if(insert!=1) throw new CustomException(CommonExMsg.INSERT_FAILED);
         }
     }
 

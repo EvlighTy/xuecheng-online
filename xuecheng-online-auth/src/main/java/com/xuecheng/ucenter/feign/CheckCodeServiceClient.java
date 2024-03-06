@@ -1,6 +1,6 @@
 package com.xuecheng.ucenter.feign;
 
-import com.xuecheng.ucenter.fallbackFacory.CheckCodeFallbackFactory;
+import com.xuecheng.ucenter.feign.fallbackFacory.CheckCodeFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

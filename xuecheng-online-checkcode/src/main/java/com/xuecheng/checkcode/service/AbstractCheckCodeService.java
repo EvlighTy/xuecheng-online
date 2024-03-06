@@ -1,6 +1,6 @@
 package com.xuecheng.checkcode.service;
 
-import com.xuecheng.base.constant.AuthExMsg;
+import com.xuecheng.base.exmsg.AuthExMsg;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.checkcode.model.CheckCodeParamsDTO;
 import com.xuecheng.checkcode.model.CheckCodeResultVO;

@@ -32,7 +32,6 @@ public class MqMessageServiceImpl extends ServiceImpl<MqMessageMapper, MqMessage
     @Autowired
     MqMessageHistoryMapper mqMessageHistoryMapper;
 
-
     @Override
     public List<MqMessage> getMessageList(int shardIndex, int shardTotal, String messageType,int count) {
         return mqMessageMapper.selectListByShardIndex(shardTotal,shardIndex,messageType,count);

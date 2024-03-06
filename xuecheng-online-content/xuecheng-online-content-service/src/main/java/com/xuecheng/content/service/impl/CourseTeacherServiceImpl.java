@@ -3,7 +3,7 @@ package com.xuecheng.content.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xuecheng.base.constant.ExMsgConstant;
+import com.xuecheng.base.exmsg.CommonExMsg;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.content.mapper.CourseTeacherMapper;
 import com.xuecheng.content.model.pojo.dto.AddCourseTeacherDTO;
@@ -41,7 +41,7 @@ public class CourseTeacherServiceImpl extends ServiceImpl<CourseTeacherMapper, C
 
         CourseTeacher courseTeacher = BeanUtil.copyProperties(addCourseTeacherDTO, CourseTeacher.class);
         boolean save = save(courseTeacher);
-        if(!save) throw new CustomException(ExMsgConstant.INSERT_FAILED);
+        if(!save) throw new CustomException(CommonExMsg.INSERT_FAILED);
         return getById(courseTeacher.getId());
     }
 
@@ -51,7 +51,7 @@ public class CourseTeacherServiceImpl extends ServiceImpl<CourseTeacherMapper, C
         //业务逻辑校验
 
         boolean update = updateById(courseTeacher);
-        if(!update) throw new CustomException(ExMsgConstant.UPDATE_FAILED);
+        if(!update) throw new CustomException(CommonExMsg.UPDATE_FAILED);
         return courseTeacher;
     }
 
@@ -61,7 +61,7 @@ public class CourseTeacherServiceImpl extends ServiceImpl<CourseTeacherMapper, C
         //业务逻辑校验
 
         boolean remove = removeById(teacherId);
-        if(!remove) throw new CustomException(ExMsgConstant.DELETE_FAILED);
+        if(!remove) throw new CustomException(CommonExMsg.DELETE_FAILED);
     }
 
 }

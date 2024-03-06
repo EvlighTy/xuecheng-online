@@ -30,4 +30,6 @@ public interface CoursePublishService extends IService<CoursePublish> {
     void uploadHtmlToMinio(File file, Long courseId);
 
     void addCourseIndex(CourseIndex courseIndex);
+
+    CoursePublish getCoursePublish(Long courseId);
 }

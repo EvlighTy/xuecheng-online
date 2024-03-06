@@ -1,8 +1,6 @@
 package com.xuecheng.base.enumeration;
 
-import lombok.Getter;
-
-@Getter
+//课程审核状态
 public enum CourseAuditStatus {
 
     REVIEW_FAILED("202001"),

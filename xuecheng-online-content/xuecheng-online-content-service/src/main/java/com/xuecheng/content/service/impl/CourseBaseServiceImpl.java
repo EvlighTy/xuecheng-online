@@ -4,10 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xuecheng.base.constant.CourseExMsg;
-import com.xuecheng.base.constant.ExMsgConstant;
+import com.xuecheng.base.exmsg.CommonExMsg;
+import com.xuecheng.base.exmsg.CourseExMsg;
 import com.xuecheng.base.enumeration.CourseAuditStatus;
-import com.xuecheng.base.enumeration.CourseStatus;
+import com.xuecheng.base.enumeration.CoursePublishStatus;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.result.PageResult;
@@ -84,10 +84,10 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
         CourseBase courseBase = BeanUtil.copyProperties(addCourseDTO, CourseBase.class);
         courseBase.setCompanyId(companyId);
         courseBase.setAuditStatus(CourseAuditStatus.REVIEW_FAILED.getValue());
-        courseBase.setStatus(CourseStatus.UNPUBLISHED.getValue());
+        courseBase.setStatus(CoursePublishStatus.UNPUBLISHED.getValue());
         //插入课程表
         boolean save = save(courseBase);
-        if(!save) throw new RuntimeException(ExMsgConstant.INSERT_FAILED);
+        if(!save) throw new RuntimeException(CommonExMsg.INSERT_FAILED);
         //拷贝为课程营销对象
         CourseMarket courseMarket = BeanUtil.copyProperties(addCourseDTO, CourseMarket.class);
         courseBase.setId(courseBase.getId());
@@ -130,16 +130,16 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
         /*业务逻辑校验(课程存在)*/
         if(courseBase==null) throw new CustomException(CourseExMsg.COURSE_NO_EXIST);
         /*业务逻辑校验(课程所属机构一致)*/
-        if(!courseBase.getCompanyId().equals(companyId)) throw new CustomException(ExMsgConstant.AUTHORITY_LIMIT);
+        if(!courseBase.getCompanyId().equals(companyId)) throw new CustomException(CommonExMsg.AUTHORITY_LIMIT);
         //封装数据
         BeanUtil.copyProperties(editCourseDTO,courseBase);
         CourseMarket courseMarket = BeanUtil.copyProperties(editCourseDTO, CourseMarket.class);
         //修改课程表
         boolean update = updateById(courseBase);
-        if(!update) throw new CustomException(ExMsgConstant.UPDATE_FAILED);
+        if(!update) throw new CustomException(CommonExMsg.UPDATE_FAILED);
         //修改课程营销表
         int updateMarket = courseMarketMapper.updateById(courseMarket);
-        if(updateMarket==0) throw new CustomException(ExMsgConstant.UPDATE_FAILED);
+        if(updateMarket==0) throw new CustomException(CommonExMsg.UPDATE_FAILED);
         return get(editCourseDTO.getId());
     }
 
@@ -169,20 +169,20 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
                 && deleteCourseMarket==1
                 && deleteTeachPlan==1
                 && deleteTeachPlaneMedia==1
-                && deleteTeacher==1)) throw new CustomException(ExMsgConstant.DELETE_FAILED);
+                && deleteTeacher==1)) throw new CustomException(CommonExMsg.DELETE_FAILED);
     }
 
     /*//参数合法性校验
     private static void paramsCheck(AddCourseDTO addCourseDTO) {
-        if(StringUtils.isEmpty(addCourseDTO.getName())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_NAME);
-        if(addCourseDTO.getPrice()==null) throw new CustomException(ExMsgConstant.EMPTY_COURSE_PRICE);
-        if(StringUtils.isEmpty(addCourseDTO.getCharge())) throw new CustomException(ExMsgConstant.EMPTY_CHARGE_RULE);
-        if(addCourseDTO.getPrice()<0) throw new CustomException(ExMsgConstant.ERROR_COURSE_PRICE);
-        if(StringUtils.isEmpty(addCourseDTO.getUsers())) throw new CustomException(ExMsgConstant.EMPTY_SUIT_PEOPLE);
-        if(StringUtils.isEmpty(addCourseDTO.getSt())||StringUtils.isEmpty(addCourseDTO.getMt())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_CATEGORY);
-        if(StringUtils.isEmpty(addCourseDTO.getGrade())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_RANK);
-        if(StringUtils.isEmpty(addCourseDTO.getPic())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_PICTURE);
-        if(StringUtils.isEmpty(addCourseDTO.getTeachmode())) throw new CustomException(ExMsgConstant.EMPTY_COURSE_TEACH_MODE);
+        if(StringUtils.isEmpty(addCourseDTO.getName())) throw new CustomException(CommonExMsg.EMPTY_COURSE_NAME);
+        if(addCourseDTO.getPrice()==null) throw new CustomException(CommonExMsg.EMPTY_COURSE_PRICE);
+        if(StringUtils.isEmpty(addCourseDTO.getCharge())) throw new CustomException(CommonExMsg.EMPTY_CHARGE_RULE);
+        if(addCourseDTO.getPrice()<0) throw new CustomException(CommonExMsg.ERROR_COURSE_PRICE);
+        if(StringUtils.isEmpty(addCourseDTO.getUsers())) throw new CustomException(CommonExMsg.EMPTY_SUIT_PEOPLE);
+        if(StringUtils.isEmpty(addCourseDTO.getSt())||StringUtils.isEmpty(addCourseDTO.getMt())) throw new CustomException(CommonExMsg.EMPTY_COURSE_CATEGORY);
+        if(StringUtils.isEmpty(addCourseDTO.getGrade())) throw new CustomException(CommonExMsg.EMPTY_COURSE_RANK);
+        if(StringUtils.isEmpty(addCourseDTO.getPic())) throw new CustomException(CommonExMsg.EMPTY_COURSE_PICTURE);
+        if(StringUtils.isEmpty(addCourseDTO.getTeachmode())) throw new CustomException(CommonExMsg.EMPTY_COURSE_TEACH_MODE);
     }*/
 
 }

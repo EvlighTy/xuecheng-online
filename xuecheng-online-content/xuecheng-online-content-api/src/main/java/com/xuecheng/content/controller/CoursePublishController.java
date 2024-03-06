@@ -1,5 +1,6 @@
 package com.xuecheng.content.controller;
 
+import com.xuecheng.content.model.pojo.entity.CoursePublish;
 import com.xuecheng.content.model.pojo.vo.CoursePreviewVO;
 import com.xuecheng.content.service.CoursePublishService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,13 @@ public class CoursePublishController {
     public void coursePublish(@PathVariable("courseId") Long courseId){
         log.info("发布课程");
         coursePublishService.coursePublish(courseId);
+    }
+
+    @ResponseBody
+    @GetMapping("/r/coursepublish/{courseId}")
+    public CoursePublish getCoursepublish(@PathVariable("courseId") Long courseId) {
+        log.info("查询已发布课程");
+        return coursePublishService.getCoursePublish(courseId);
     }
 
 }

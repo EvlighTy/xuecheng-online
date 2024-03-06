@@ -1,7 +1,6 @@
 package com.xuecheng.content.model.pojo.dto;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -18,58 +17,44 @@ import javax.validation.constraints.Size;
 public class AddCourseDTO {
 
     @NotEmpty(message = "课程名称不能为空")
-    @ApiModelProperty(value = "课程名称", required = true)
-    private String name;
+    private String name; //课程名称
 
     @NotEmpty(message = "适用人群不能为空")
     @Size(message = "适用人群内容过少",min = 10)
-    @ApiModelProperty(value = "适用人群", required = true)
-    private String users;
+    private String users; //适用人群
 
-    @ApiModelProperty(value = "课程标签")
-    private String tags;
+    private String tags; //课程标签
 
     @NotEmpty(message = "课程分类不能为空")
-    @ApiModelProperty(value = "大分类", required = true)
-    private String mt;
+    private String mt; //大分类
 
     @NotEmpty(message = "课程分类不能为空")
-    @ApiModelProperty(value = "小分类", required = true)
-    private String st;
+    private String st; //小分类
 
     @NotEmpty(message = "课程等级不能为空")
-    @ApiModelProperty(value = "课程等级", required = true)
-    private String grade;
+    private String grade; //课程等级
 
     @NotEmpty(message = "课程教学模式不能为空")
-    @ApiModelProperty(value = "教学模式（普通，录播，直播等）", required = true)
-    private String teachmode;
+    private String teachmode; //教学模式
 
-    @ApiModelProperty(value = "课程介绍")
-    private String description;
+    private String description; //课程介绍
 
-    @ApiModelProperty(value = "课程图片", required = true)
-    private String pic;
+    @NotEmpty
+    private String pic; //课程图片
 
     @NotEmpty(message = "收费规则不能为空")
-    @ApiModelProperty(value = "收费规则，对应数据字典", required = true)
-    private String charge;
+    private String charge; //收费规则
 
-    @ApiModelProperty(value = "价格")
-    private Float price;
+    private Float price; //价格
 
-    @ApiModelProperty(value = "原价")
-    private Float originalPrice;
+    private Float originalPrice; //原价
 
-    @ApiModelProperty(value = "qq")
-    private String qq;
+    private String qq; //qq
 
-    @ApiModelProperty(value = "微信")
-    private String wechat;
+    private String wechat; //微信
 
-    @ApiModelProperty(value = "电话")
-    private String phone;
+    private String phone; //电话
 
-    @ApiModelProperty(value = "有效期")
-    private Integer validDays;
+    private Integer validDays; //有效期
+
 }

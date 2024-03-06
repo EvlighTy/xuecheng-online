@@ -1,5 +1,6 @@
 package com.xuecheng.base.enumeration;
 
+//对象的审核状态
 public enum ObjectAuditStatus {
 
     REVIEW_FAILED("002001"),

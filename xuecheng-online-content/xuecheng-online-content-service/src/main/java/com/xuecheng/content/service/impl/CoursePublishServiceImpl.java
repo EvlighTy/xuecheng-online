@@ -4,14 +4,15 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xuecheng.base.constant.CourseExMsg;
-import com.xuecheng.base.constant.ExMsgConstant;
+import com.xuecheng.base.exmsg.CommonExMsg;
+import com.xuecheng.base.exmsg.CourseExMsg;
 import com.xuecheng.base.enumeration.CourseAuditStatus;
-import com.xuecheng.base.enumeration.CourseStatus;
+import com.xuecheng.base.enumeration.CoursePublishStatus;
+import com.xuecheng.base.enumeration.MessageType;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.content.config.MultipartSupportConfig;
-import com.xuecheng.content.feignClient.MediaServiceClient;
-import com.xuecheng.content.feignClient.SearchServiceClient;
+import com.xuecheng.content.feign.MediaServiceClient;
+import com.xuecheng.content.feign.SearchServiceClient;
 import com.xuecheng.content.mapper.CoursePublishMapper;
 import com.xuecheng.content.mapper.CoursePublishPreMapper;
 import com.xuecheng.content.model.pojo.entity.CourseBase;
@@ -39,7 +40,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,6 +78,7 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
     @Autowired
     private SearchServiceClient searchServiceClient;
 
+    //课程预览
     @Override
     public CoursePreviewVO preview(Long courseId) {
         CourseBaseInfoVO courseBaseInfoVO = courseBaseService.get(courseId);
@@ -85,6 +89,7 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
                 .build();
     }
 
+    //课程提交审核
     @Transactional
     @Override
     public void commitAudit(Long courseId) {
@@ -94,7 +99,7 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
         /*业务逻辑校验(课程存在)*/
         if(courseBaseInfoVO==null) throw new CustomException(CourseExMsg.COURSE_NO_EXIST);
         /*业务逻辑校验(课程所属机构一致)*/
-        if(!courseBaseInfoVO.getCompanyId().equals(companyId)) throw new CustomException(ExMsgConstant.AUTHORITY_LIMIT);
+        if(!courseBaseInfoVO.getCompanyId().equals(companyId)) throw new CustomException(CommonExMsg.AUTHORITY_LIMIT);
         /*业务逻辑校验(课程状态为未提交)*/
         if(courseBaseInfoVO.getAuditStatus().equals("202003")) throw new CustomException(CourseExMsg.COMMITTED);
         /*业务逻辑校验(课程图片已上传)*/
@@ -125,6 +130,7 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
         courseBaseService.update(updateWrapper);
     }
 
+    //发布课程
     @Transactional
     @Override
     public void coursePublish(Long courseId) {
@@ -134,25 +140,32 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
         /*业务逻辑校验(预发布课程存在)*/
         if(coursePublishPre==null) throw new CustomException(CourseExMsg.UNCOMMITTED);
         /*业务逻辑校验(课程所属机构一致)*/
-        if(!coursePublishPre.getCompanyId().equals(companyId)) throw new CustomException(ExMsgConstant.AUTHORITY_LIMIT);
+        if(!coursePublishPre.getCompanyId().equals(companyId)) throw new CustomException(CommonExMsg.AUTHORITY_LIMIT);
         /*业务逻辑校验(预发布课程已通过审核)*/
-        if(!coursePublishPre.getStatus().equals("202004")) throw new CustomException(CourseExMsg.NOT_PASS);
+        if(!coursePublishPre.getStatus().equals(CourseAuditStatus.REVIEW_PASSED.getValue())) throw new CustomException(CourseExMsg.NOT_PASS);
         //向课程发布表更新或插入数据
         CoursePublish coursePublish = BeanUtil.copyProperties(coursePublishPre, CoursePublish.class);
-        coursePublish.setStatus(CourseStatus.PUBLISHED.getValue());
+        coursePublish.setStatus(CoursePublishStatus.PUBLISHED.getValue());
         CoursePublish old = getById(courseId);
         if(old==null) save(coursePublish);
         else updateById(coursePublish);
+        //更新课程基本表信息
+        LambdaUpdateWrapper<CourseBase> updateWrapper = new LambdaUpdateWrapper<CourseBase>()
+                .eq(CourseBase::getId, courseId)
+                .set(CourseBase::getStatus, CoursePublishStatus.PUBLISHED.getValue());
+        boolean update = courseBaseService.update(updateWrapper);
+        if(!update) throw new CustomException(CommonExMsg.UPDATE_FAILED);
         //向消息表插入数据
         saveCoursePublishMessage(courseId);
         //删除预发布表数据
         int delete = coursePublishPreMapper.deleteById(courseId);
-        if(delete!=1) throw new CustomException(ExMsgConstant.DELETE_FAILED);
+        if(delete!=1) throw new CustomException(CommonExMsg.DELETE_FAILED);
     }
 
+    //保存任务信息
     private void saveCoursePublishMessage(Long courseId){
-        MqMessage mqMessage = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
-        if(mqMessage==null) throw new CustomException(ExMsgConstant.INSERT_FAILED);
+        MqMessage mqMessage = mqMessageService.addMessage(MessageType.COURSE_PUBLISH.getValue(), String.valueOf(courseId), null, null);
+        if(mqMessage==null) throw new CustomException(CommonExMsg.INSERT_FAILED);
     }
 
     //生成课程静态页面
@@ -197,6 +210,12 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
             log.info("添加课程文档失败:[{}]",courseIndex);
             throw new CustomException(CourseExMsg.ADD_COURSE_INDEX_FAILED);
         }
+    }
+
+    //查询已发布课程
+    @Override
+    public CoursePublish getCoursePublish(Long courseId) {
+        return getById(courseId);
     }
 
 }

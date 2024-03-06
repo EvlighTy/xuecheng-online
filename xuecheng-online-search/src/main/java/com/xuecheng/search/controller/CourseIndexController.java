@@ -1,6 +1,6 @@
 package com.xuecheng.search.controller;
 
-import com.xuecheng.base.constant.SearchExMsg;
+import com.xuecheng.base.exmsg.SearchExMsg;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.search.po.CourseIndex;
 import com.xuecheng.search.service.IndexService;

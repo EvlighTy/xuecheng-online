@@ -83,12 +83,8 @@ public class GatewayAuthFilter implements GlobalFilter, Ordered {
             log.info("认证令牌无效: {}", token);
             return buildReturnMono("认证令牌无效",exchange);
         }
-
     }
 
-    /**
-     * 获取token
-     */
     private String getToken(ServerWebExchange exchange) {
         String tokenStr = exchange.getRequest().getHeaders().getFirst("Authorization");
         if (StringUtils.isBlank(tokenStr)) {
@@ -101,6 +97,10 @@ public class GatewayAuthFilter implements GlobalFilter, Ordered {
         return token;
     }
 
+    @Override
+    public int getOrder() {
+        return 0;
+    }
 
     private Mono<Void> buildReturnMono(String error, ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
@@ -110,11 +110,6 @@ public class GatewayAuthFilter implements GlobalFilter, Ordered {
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
         return response.writeWith(Mono.just(buffer));
-    }
-
-    @Override
-    public int getOrder() {
-        return 0;
     }
 
 }

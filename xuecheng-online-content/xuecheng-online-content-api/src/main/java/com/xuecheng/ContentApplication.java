@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableSwagger2Doc
-@EnableFeignClients(basePackages = "com.xuecheng.content.feignClient")
+@EnableFeignClients(basePackages = "com.xuecheng.content.feign")
 @MapperScan("com.xuecheng.content.mapper")
 @SpringBootApplication
 public class ContentApplication {
