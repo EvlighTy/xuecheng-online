@@ -2,6 +2,7 @@ package com.xuecheng.content.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xuecheng.base.model.PageParams;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.base.model.result.PageResult;
 import com.xuecheng.content.model.pojo.dto.AddCourseDTO;
 import com.xuecheng.content.model.pojo.dto.CourseQueryDTO;
@@ -28,4 +29,6 @@ public interface CourseBaseService extends IService<CourseBase> {
     CourseBaseInfoVO edit(EditCourseDTO editCourseDTO);
 
     void delete(Long id);
+
+    RestResponse courseOffline(Long courseId);
 }

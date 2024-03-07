@@ -3,20 +3,23 @@ package com.xuecheng.learning.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xuecheng.base.exmsg.ChooserCourseExMsg;
-import com.xuecheng.base.exmsg.CommonExMsg;
-import com.xuecheng.base.exmsg.CourseExMsg;
 import com.xuecheng.base.enumeration.ChooserCourseStatus;
 import com.xuecheng.base.enumeration.ChooserCourseType;
 import com.xuecheng.base.enumeration.CourseChargeType;
 import com.xuecheng.base.enumeration.LearnStatus;
 import com.xuecheng.base.exception.CustomException;
-import com.xuecheng.base.utils.SecurityUtil;
+import com.xuecheng.base.exmsg.AuthExMsg;
+import com.xuecheng.base.exmsg.ChooserCourseExMsg;
+import com.xuecheng.base.exmsg.CommonExMsg;
+import com.xuecheng.base.exmsg.CourseExMsg;
+import com.xuecheng.base.model.result.PageResult;
 import com.xuecheng.learning.feign.ContentServiceClient;
 import com.xuecheng.learning.feign.model.CoursePublish;
 import com.xuecheng.learning.mapper.XcChooseCourseMapper;
 import com.xuecheng.learning.mapper.XcCourseTablesMapper;
+import com.xuecheng.learning.model.dto.MyCourseTableDTO;
 import com.xuecheng.learning.model.po.XcChooseCourse;
 import com.xuecheng.learning.model.po.XcCourseTables;
 import com.xuecheng.learning.model.vo.XcChooseCourseVO;
@@ -43,10 +46,11 @@ public class ChooseCourseServiceImpl extends ServiceImpl<XcChooseCourseMapper, X
     //用户选课
     @Transactional
     @Override
-    public XcChooseCourseVO addChooseCourse(Long courseId) {
-        String userId = SecurityUtil.getUser().getId();
-        CoursePublish coursepublish = contentServiceClient.getCoursepublish(courseId);
+    public XcChooseCourseVO addChooseCourse(String userId, Long courseId) {
+        /*业务逻辑校验(合法用户)*/
+        if (userId==null) throw new CustomException(AuthExMsg.LOGIN_FIRST);
         /*业务逻辑校验(课程已发布)*/
+        CoursePublish coursepublish = contentServiceClient.getCoursepublish(courseId);
         if(coursepublish==null) throw new CustomException(CourseExMsg.COURSE_NO_EXIST);
         String charge = coursepublish.getCharge();
         XcChooseCourse xcChooseCourse;
@@ -84,20 +88,23 @@ public class ChooseCourseServiceImpl extends ServiceImpl<XcChooseCourseMapper, X
             }
         }
         XcChooseCourseVO xcChooseCourseVO = BeanUtil.copyProperties(xcChooseCourse, XcChooseCourseVO.class);
-        XcCourseTablesVO xcCourseTablesVO = getLearnStatus(courseId);
+        XcCourseTablesVO xcCourseTablesVO = getLearnStatus(userId,courseId);
         xcChooseCourseVO.setLearnStatus(xcCourseTablesVO.getLearnStatus());
         return xcChooseCourseVO;
     }
 
     //查询课程学习资格
     @Override
-    public XcCourseTablesVO getLearnStatus(Long courseId) {
-        String userId = SecurityUtil.getUser().getId();
+    public XcCourseTablesVO getLearnStatus(String userId, Long courseId) {
+        XcCourseTablesVO xcCourseTablesVO = new XcCourseTablesVO();
+        if(userId==null){
+            xcCourseTablesVO.setLearnStatus(LearnStatus.ABNORMAL.getValue());
+            return xcCourseTablesVO;
+        }
         LambdaQueryWrapper<XcCourseTables> queryWrapper = new LambdaQueryWrapper<XcCourseTables>()
                 .eq(XcCourseTables::getUserId, userId)
                 .eq(XcCourseTables::getCourseId, courseId);
         XcCourseTables xcCourseTables = xcCourseTablesMapper.selectOne(queryWrapper);
-        XcCourseTablesVO xcCourseTablesVO = new XcCourseTablesVO();
         if(xcCourseTables==null){
             xcCourseTablesVO.setLearnStatus(LearnStatus.ABNORMAL.getValue());
         }else if(xcCourseTables.getValidtimeEnd().isBefore(LocalDateTime.now())){
@@ -124,6 +131,21 @@ public class ChooseCourseServiceImpl extends ServiceImpl<XcChooseCourseMapper, X
         //添加选课
         xcChooseCourse.setStatus(ChooserCourseStatus.SUCCESS.getValue());
         add2XcCourseTables(xcChooseCourse);
+    }
+
+    //用户查询我的课程
+    @Override
+    public PageResult<XcCourseTables> getMyCourseTable(MyCourseTableDTO myCourseTableDTO) {
+        Page<XcCourseTables> page = new Page<>(myCourseTableDTO.getPage(), myCourseTableDTO.getSize());
+        LambdaQueryWrapper<XcCourseTables> queryWrapper = new LambdaQueryWrapper<XcCourseTables>()
+                .eq(XcCourseTables::getUserId, myCourseTableDTO.getUserId());
+        if(myCourseTableDTO.getSortType().equals("1")){
+            queryWrapper.orderByAsc(XcCourseTables::getUpdateDate);
+        }else {
+            queryWrapper.orderByAsc(XcCourseTables::getCreateDate);
+        }
+        Page<XcCourseTables> result = xcCourseTablesMapper.selectPage(page, queryWrapper);
+        return new PageResult<>(result.getTotal(),result.getRecords());
     }
 
     //添加到用户的选课

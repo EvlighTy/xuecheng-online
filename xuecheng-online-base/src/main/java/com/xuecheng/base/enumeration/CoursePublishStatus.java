@@ -7,7 +7,7 @@ public enum CoursePublishStatus {
 
     PUBLISHED("203002"),
 
-    OFFLINE("203001");
+    OFFLINE("203003");
 
     private final String value;
 

@@ -2,6 +2,7 @@ package com.xuecheng.media.controller;
 
 import com.xuecheng.base.enumeration.FileType;
 import com.xuecheng.base.model.PageParams;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.base.model.result.PageResult;
 import com.xuecheng.media.model.dto.QueryMediaParamsDTO;
 import com.xuecheng.media.model.dto.UploadFileDTO;
@@ -48,8 +49,13 @@ public class MediaFilesController {
                 .fileType(FileType.IMAGE.getValue())
                 .build();
         String localFilePath = getLocalFilePath(multipartFile);
-        UploadFileResultVO uploadFileResultVO = mediaFileService.uploadFile(uploadFileDTO,localFilePath,objectPath);
-        return uploadFileResultVO;
+        return mediaFileService.uploadFile(uploadFileDTO,localFilePath,objectPath);
+    }
+
+    @DeleteMapping("/{mediaId}")
+    public RestResponse deleteMedia(@PathVariable String mediaId){
+        log.info("删除媒资");
+        return mediaFileService.deleteMedia(mediaId);
     }
 
     private static String getLocalFilePath(MultipartFile multipartFile) throws IOException {

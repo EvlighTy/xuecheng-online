@@ -81,8 +81,12 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
     //课程预览
     @Override
     public CoursePreviewVO preview(Long courseId) {
-        CourseBaseInfoVO courseBaseInfoVO = courseBaseService.get(courseId);
-        List<TeachPlanVO> teachPlanVOS = teachplanService.getList(courseId);
+        /*CourseBaseInfoVO courseBaseInfoVO = courseBaseService.get(courseId);
+        List<TeachPlanVO> teachPlanVOS = teachplanService.getList(courseId);*/
+        CoursePublish coursePublish = getById(courseId);
+        CourseBaseInfoVO courseBaseInfoVO = BeanUtil.copyProperties(coursePublish, CourseBaseInfoVO.class);
+        String teachplan = coursePublish.getTeachplan();
+        List<TeachPlanVO> teachPlanVOS = JSON.parseArray(teachplan, TeachPlanVO.class);
         return CoursePreviewVO.builder()
                 .courseBase(courseBaseInfoVO)
                 .teachplans(teachPlanVOS)
@@ -101,7 +105,7 @@ public class CoursePublishServiceImpl extends ServiceImpl<CoursePublishMapper, C
         /*业务逻辑校验(课程所属机构一致)*/
         if(!courseBaseInfoVO.getCompanyId().equals(companyId)) throw new CustomException(CommonExMsg.AUTHORITY_LIMIT);
         /*业务逻辑校验(课程状态为未提交)*/
-        if(courseBaseInfoVO.getAuditStatus().equals("202003")) throw new CustomException(CourseExMsg.COMMITTED);
+        if(courseBaseInfoVO.getAuditStatus().equals(CourseAuditStatus.COMMITTED.getValue())) throw new CustomException(CourseExMsg.COMMITTED);
         /*业务逻辑校验(课程图片已上传)*/
         if(StringUtils.isEmpty(courseBaseInfoVO.getPic())) throw new CustomException(CourseExMsg.EMPTY_COURSE_PICTURE);
         List<TeachPlanVO> teachPlanVOS = teachplanService.getList(courseId);

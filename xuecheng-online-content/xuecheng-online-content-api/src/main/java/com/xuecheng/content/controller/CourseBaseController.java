@@ -1,6 +1,7 @@
 package com.xuecheng.content.controller;
 
 import com.xuecheng.base.model.PageParams;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.base.model.result.PageResult;
 import com.xuecheng.base.model.result.Result;
 import com.xuecheng.base.utils.SecurityUtil;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j
 @RestController
-@RequestMapping("/course")
+@RequestMapping
 public class CourseBaseController {
 
     @Autowired
@@ -37,7 +38,7 @@ public class CourseBaseController {
         return Result.success(pageResult);
     }*/
 
-    @PostMapping("/list")
+    @PostMapping("/course/list")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody(required = false) CourseQueryDTO courseQueryDTO){
         log.info("分页查询课程");
         PageResult<CourseBase> pageResult = courseBaseService.getList(pageParams,courseQueryDTO);
@@ -45,7 +46,7 @@ public class CourseBaseController {
     }
 
     @PreAuthorize("hasAnyAuthority('xc_teachmanager_course')")
-    @PostMapping
+    @PostMapping("/course")
     public CourseBaseInfoVO add(@RequestBody @Validated AddCourseDTO addCourseDTO){
         log.info("添加课程");
         CourseBaseInfoVO courseBaseInfoVO = courseBaseService.add(addCourseDTO);
@@ -53,7 +54,7 @@ public class CourseBaseController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/course/{id}")
     public CourseBaseInfoVO get(@PathVariable Long id){
         SecurityUtil.XcUser user = SecurityUtil.getUser();
         log.info("查询课程");
@@ -61,16 +62,22 @@ public class CourseBaseController {
         return courseBaseInfoVO;
     }
 
-    @PutMapping
+    @PutMapping("/course")
     public CourseBaseInfoVO edit(@RequestBody EditCourseDTO editCourseDTO){
         log.info("修改课程");
         CourseBaseInfoVO courseBaseInfoVO = courseBaseService.edit(editCourseDTO);
         return courseBaseInfoVO;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/course/{id}")
     public Result<String> delete(Long id){
        courseBaseService.delete(id);
        return Result.success("删除课程成功");
+    }
+
+    @GetMapping("/courseoffline/{courseId}")
+    public RestResponse courseOffline(@PathVariable Long courseId){
+        log.info("下架课程");
+        return courseBaseService.courseOffline(courseId);
     }
 }

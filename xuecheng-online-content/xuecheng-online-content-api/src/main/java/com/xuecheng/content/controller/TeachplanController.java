@@ -3,6 +3,7 @@ package com.xuecheng.content.controller;
 import com.xuecheng.base.model.result.Result;
 import com.xuecheng.content.model.pojo.dto.AddTeachPlanDTO;
 import com.xuecheng.content.model.pojo.dto.BindTeachPlanMediaDTO;
+import com.xuecheng.content.model.pojo.entity.TeachplanMedia;
 import com.xuecheng.content.model.pojo.vo.TeachPlanVO;
 import com.xuecheng.content.service.TeachplanService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +31,7 @@ public class TeachplanController {
     @GetMapping("/{id}/tree-nodes")
     public List<TeachPlanVO> getlist(@PathVariable Long id){
         log.info("查询课程计划");
-        List<TeachPlanVO> teachPlanVOS = teachplanService.getList(id);
-        return teachPlanVOS;
+        return teachplanService.getList(id);
     }
 
     @PostMapping
@@ -61,9 +61,14 @@ public class TeachplanController {
     }
 
     @DeleteMapping("/association/media/{teachPlanId}/{mediaId}")
-    public void removeBind(@PathVariable Long teachPlanId,@PathVariable Long mediaId){
+    public void removeBind(@PathVariable Long teachPlanId,@PathVariable String mediaId){
         log.info("教学计划解除绑定媒资");
         teachplanService.removeBind(teachPlanId,mediaId);
+    }
+
+    @GetMapping("/media/{mediaId}")
+    public TeachplanMedia queryTeachPlanByMediaId(@PathVariable String mediaId){
+        return teachplanService.getTeachPlanByMediaId(mediaId);
     }
 
 }

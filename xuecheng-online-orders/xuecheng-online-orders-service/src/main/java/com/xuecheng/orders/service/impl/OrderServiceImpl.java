@@ -6,18 +6,16 @@ import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xuecheng.base.exmsg.AuthExMsg;
-import com.xuecheng.base.exmsg.CommonExMsg;
-import com.xuecheng.base.exmsg.OrderExMsg;
 import com.xuecheng.base.enumeration.MessageType;
 import com.xuecheng.base.enumeration.OrderStatus;
 import com.xuecheng.base.enumeration.PayChannel;
 import com.xuecheng.base.enumeration.PayStatus;
 import com.xuecheng.base.exception.CustomException;
+import com.xuecheng.base.exmsg.AuthExMsg;
+import com.xuecheng.base.exmsg.CommonExMsg;
+import com.xuecheng.base.exmsg.OrderExMsg;
 import com.xuecheng.base.utils.IdWorkerUtils;
 import com.xuecheng.base.utils.QRCodeUtil;
-import com.xuecheng.orders.utils.RabbitMQUtil;
-import com.xuecheng.base.utils.SecurityUtil;
 import com.xuecheng.messagesdk.model.po.MqMessage;
 import com.xuecheng.messagesdk.service.MqMessageService;
 import com.xuecheng.orders.mapper.XcOrdersGoodsMapper;
@@ -32,6 +30,7 @@ import com.xuecheng.orders.model.vo.PayStatusVO;
 import com.xuecheng.orders.service.OrderService;
 import com.xuecheng.orders.service.OrdersGoodsService;
 import com.xuecheng.orders.utils.AlipayUtil;
+import com.xuecheng.orders.utils.RabbitMQUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -78,9 +77,9 @@ public class OrderServiceImpl extends ServiceImpl<XcOrdersMapper, XcOrders> impl
     //用户请求支付二维码
     @Transactional
     @Override
-    public PayRecordVO createOrder(AddOrderDTO addOrderDTO) {
+    public PayRecordVO createOrder(String userId, AddOrderDTO addOrderDTO) {
         //保存订单信息
-        XcOrders xcOrders = save2Order(addOrderDTO);
+        XcOrders xcOrders = save2Order(userId, addOrderDTO);
         //保存支付信息
         XcPayRecord xcPayRecord = save2PayRecord(xcOrders);
         //生成支付二维码
@@ -194,9 +193,8 @@ public class OrderServiceImpl extends ServiceImpl<XcOrdersMapper, XcOrders> impl
     }
 
     //保存订单信息(订单表+订单详细表)
-    private XcOrders save2Order(AddOrderDTO addOrderDTO) {
+    private XcOrders save2Order(String userId, AddOrderDTO addOrderDTO) {
         /*业务逻辑校验(合法用户)*/
-        String userId = SecurityUtil.getUser().getId();
         if (userId==null) throw new CustomException(AuthExMsg.LOGIN_FIRST);
         /*业务逻辑校验(一个选课记录只能创建一个订单)*/
         LambdaQueryWrapper<XcOrders> queryWrapper = new LambdaQueryWrapper<XcOrders>()

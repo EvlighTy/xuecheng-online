@@ -11,7 +11,10 @@ import com.xuecheng.base.exmsg.MinioExMsg;
 import com.xuecheng.base.enumeration.ObjectAuditStatus;
 import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.base.model.PageParams;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.base.model.result.PageResult;
+import com.xuecheng.media.feign.ContentFeignClient;
+import com.xuecheng.media.feign.model.TeachplanMedia;
 import com.xuecheng.media.mapper.MediaFilesMapper;
 import com.xuecheng.media.mapper.MediaProcessMapper;
 import com.xuecheng.media.model.dto.QueryMediaParamsDTO;
@@ -60,6 +63,9 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper,MediaFile
     @Autowired
     private MediaFileService mediaFileService;
 
+    @Autowired
+    private ContentFeignClient contentFeignClient;
+
     //存储其他
     @Value("${minio.bucket.files}")
     private String bucketFiles;
@@ -79,6 +85,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper,MediaFile
                 .like(filename!=null && !filename.isEmpty(), MediaFiles::getFilename, filename)
                 .eq(fileType!=null && !fileType.isEmpty(),MediaFiles::getFileType, fileType)
                 .eq(auditStatus!=null && !auditStatus.isEmpty(),MediaFiles::getAuditStatus, auditStatus)
+                .orderByAsc(MediaFiles::getCreateDate)
                 .page(page);
         return new PageResult<>(result.getTotal(),result.getRecords());
     }
@@ -159,12 +166,31 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper,MediaFile
         return true;
     }
 
+    //预览媒资
     @Override
     public String preview(String mediaId) {
         MediaFiles mediaFiles = getById(mediaId);
         if(mediaFiles==null) throw new CustomException(MediaExMsg.MEDIA_NO_EXIST);
         if(StringUtils.isEmpty(mediaFiles.getStatus())) throw new CustomException(MediaExMsg.MEDIA_NO_TRANS);
         return mediaFiles.getUrl();
+    }
+
+    //删除媒资文件
+    @Transactional
+    @Override
+    public RestResponse deleteMedia(String mediaId) {
+        /*业务逻辑校验(媒资文件存在)*/
+        MediaFiles mediaFiles = getById(mediaId);
+        if(mediaFiles==null) throw new CustomException(MediaExMsg.MEDIA_NO_EXIST);
+        /*业务逻辑校验(该媒资文件未关联教学计划)*/
+        TeachplanMedia teachplanMedia = contentFeignClient.queryTeachPlanByMediaId(mediaId);
+        if(teachplanMedia!=null) throw new CustomException(MediaExMsg.MEDIA_BIND_TEACH_PLAN);
+        //删除文件
+        MinioUtil.clearFiles(mediaFiles.getBucket(),mediaFiles.getFilePath());
+        //删除文件信息
+        boolean remove = removeById(mediaId);
+        if(!remove) throw new CustomException(CommonExMsg.DELETE_FAILED);
+        return RestResponse.success();
     }
 
     //上传分块文件

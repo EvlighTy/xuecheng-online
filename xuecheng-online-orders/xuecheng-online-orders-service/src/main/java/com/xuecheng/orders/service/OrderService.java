@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface OrderService extends IService<XcOrders> {
 
-    PayRecordVO createOrder(AddOrderDTO addOrderDTO);
+    PayRecordVO createOrder(String userId,AddOrderDTO addOrderDTO);
 
     void requestPay(String payNo, HttpServletResponse httpResponse);
 

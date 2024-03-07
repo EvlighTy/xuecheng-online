@@ -2,6 +2,7 @@ package com.xuecheng.media.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xuecheng.base.model.PageParams;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.base.model.result.PageResult;
 import com.xuecheng.media.model.dto.QueryMediaParamsDTO;
 import com.xuecheng.media.model.dto.UploadFileDTO;
@@ -32,4 +33,6 @@ public interface MediaFileService extends IService<MediaFiles> {
     Boolean mergeChunks(String fileMd5, int chunkTotal, UploadFileDTO uploadFileDTO);
 
     String preview(String mediaId);
+
+    RestResponse deleteMedia(String mediaId);
 }

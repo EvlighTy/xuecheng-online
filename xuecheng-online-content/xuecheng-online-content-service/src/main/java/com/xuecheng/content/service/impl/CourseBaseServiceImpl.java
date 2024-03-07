@@ -2,14 +2,16 @@ package com.xuecheng.content.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.xuecheng.base.exmsg.CommonExMsg;
-import com.xuecheng.base.exmsg.CourseExMsg;
 import com.xuecheng.base.enumeration.CourseAuditStatus;
 import com.xuecheng.base.enumeration.CoursePublishStatus;
 import com.xuecheng.base.exception.CustomException;
+import com.xuecheng.base.exmsg.CommonExMsg;
+import com.xuecheng.base.exmsg.CourseExMsg;
 import com.xuecheng.base.model.PageParams;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.base.model.result.PageResult;
 import com.xuecheng.base.utils.SecurityUtil;
 import com.xuecheng.content.mapper.*;
@@ -53,6 +55,9 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
 
     @Autowired
     private CourseTeacherMapper courseTeacherMapper;
+
+    @Autowired
+    private CoursePublishMapper coursePublishMapper;
 
     //分页查询课程
     @Override
@@ -170,6 +175,31 @@ public class CourseBaseServiceImpl extends ServiceImpl<CourseBaseMapper, CourseB
                 && deleteTeachPlan==1
                 && deleteTeachPlaneMedia==1
                 && deleteTeacher==1)) throw new CustomException(CommonExMsg.DELETE_FAILED);
+    }
+
+    //下架课程
+    @Transactional
+    @Override
+    public RestResponse courseOffline(Long courseId) {
+        /*业务逻辑校验(课程存在)*/
+        CourseBase courseBase = getById(courseId);
+        if(courseBase==null) throw new CustomException(CourseExMsg.COURSE_NO_EXIST);
+        /*业务逻辑校验(课程已发布)*/
+        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+        if(coursePublish==null) throw new CustomException(CourseExMsg.NOT_PUBLISH);
+        //更新课程基本表
+        LambdaUpdateWrapper<CourseBase> updateWrapper = new LambdaUpdateWrapper<CourseBase>()
+                .eq(CourseBase::getId, courseId)
+                .set(CourseBase::getStatus, CoursePublishStatus.OFFLINE.getValue());
+        boolean update = update(updateWrapper);
+        if(!update) throw new CustomException(CommonExMsg.UPDATE_FAILED);
+        //更新课程发布表
+        LambdaUpdateWrapper<CoursePublish> updateWrapper1 = new LambdaUpdateWrapper<CoursePublish>()
+                .eq(CoursePublish::getId, courseId)
+                .set(CoursePublish::getStatus, CoursePublishStatus.OFFLINE.getValue());
+        int update1 = coursePublishMapper.update(null, updateWrapper1);
+        if(update1<1) throw new CustomException(CommonExMsg.UPDATE_FAILED);
+        return RestResponse.success();
     }
 
     /*//参数合法性校验

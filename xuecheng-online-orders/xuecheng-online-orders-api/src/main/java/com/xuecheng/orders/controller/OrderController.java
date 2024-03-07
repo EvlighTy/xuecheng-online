@@ -3,6 +3,7 @@ package com.xuecheng.orders.controller;
 import com.xuecheng.orders.model.dto.AddOrderDTO;
 import com.xuecheng.orders.model.vo.PayRecordVO;
 import com.xuecheng.orders.service.OrderService;
+import com.xuecheng.orders.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,10 @@ public class OrderController {
     @PostMapping("/generatepaycode")
     public PayRecordVO createOrder(@RequestBody AddOrderDTO addOrderDTO) {
         log.info("用户请求支付二维码");
-        return orderService.createOrder(addOrderDTO);
+        SecurityUtil.XcUser user = SecurityUtil.getUser();
+        String userId = null;
+        if(user!=null) userId=user.getId();
+        return orderService.createOrder(userId,addOrderDTO);
     }
 
     @GetMapping("/requestpay")

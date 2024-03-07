@@ -3,10 +3,11 @@ package com.xuecheng.content.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xuecheng.base.exception.CustomException;
 import com.xuecheng.base.exmsg.CommonExMsg;
 import com.xuecheng.base.exmsg.CourseExMsg;
 import com.xuecheng.base.exmsg.TeachPlanExMsg;
-import com.xuecheng.base.exception.CustomException;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.content.mapper.TeachplanMapper;
 import com.xuecheng.content.mapper.TeachplanMediaMapper;
 import com.xuecheng.content.model.pojo.dto.AddTeachPlanDTO;
@@ -129,9 +130,9 @@ public class TeachplanServiceImpl extends ServiceImpl<TeachplanMapper, Teachplan
         /*业务逻辑校验(只允许第二级教学计划绑定媒资文件)*/
         if(teachplan.getGrade()!=2) throw new CustomException(TeachPlanExMsg.BIND_GRADE_2_ONLY);
         //删除原信息
-        LambdaQueryWrapper<TeachplanMedia> queryWrapper1 = new LambdaQueryWrapper<TeachplanMedia>()
-                .eq(TeachplanMedia::getTeachplanId, bindTeachPlanMediaDTO.getTeachplanId());
-        teachplanMediaMapper.delete(queryWrapper1);
+//        LambdaQueryWrapper<TeachplanMedia> queryWrapper1 = new LambdaQueryWrapper<TeachplanMedia>()
+//                .eq(TeachplanMedia::getTeachplanId, bindTeachPlanMediaDTO.getTeachplanId());
+//        int delete = teachplanMediaMapper.delete(queryWrapper1);
 //        if(delete!=1) throw new CustomException(CommonExMsg.DELETE_FAILED);
         /*业务逻辑校验教学计划id和媒资id均不能为空*/
         if(bindTeachPlanMediaDTO.getMediaId()==null||bindTeachPlanMediaDTO.getFileName()==null) return;
@@ -145,7 +146,7 @@ public class TeachplanServiceImpl extends ServiceImpl<TeachplanMapper, Teachplan
 
     //课程计划解除绑定媒资
     @Override
-    public void removeBind(Long teachPlanId, Long mediaId) {
+    public RestResponse removeBind(Long teachPlanId, String mediaId) {
         /*业务逻辑校验(课程存在)*/
         Teachplan teachplan = getById(teachPlanId);
         if(teachplan==null) throw new CustomException(TeachPlanExMsg.TEACH_PLAN_NO_EXIST);
@@ -155,6 +156,15 @@ public class TeachplanServiceImpl extends ServiceImpl<TeachplanMapper, Teachplan
                 .eq(TeachplanMedia::getMediaId, mediaId);
         int delete = teachplanMediaMapper.delete(queryWrapper);
         if(delete!=1) throw new CustomException(CommonExMsg.DELETE_FAILED);
+        return RestResponse.success();
+    }
+
+    //查询媒资文件是否关联教学计划
+    @Override
+    public TeachplanMedia getTeachPlanByMediaId(String mediaId) {
+        LambdaQueryWrapper<TeachplanMedia> queryWrapper = new LambdaQueryWrapper<TeachplanMedia>()
+                .eq(TeachplanMedia::getMediaId, mediaId);
+        return teachplanMediaMapper.selectOne(queryWrapper);
     }
 
     //交换元素

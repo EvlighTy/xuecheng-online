@@ -8,6 +8,7 @@ public class CourseExMsg {
     public static final String EMPTY_SUIT_PEOPLE="适用人群不能为空";
     public static final String EMPTY_COURSE_CATEGORY="课程分类不能为空";
     public static final String NOT_PASS="课程未通过审核";
+    public static final String NOT_PUBLISH="课程未发布";
     public static final String UNCOMMITTED="课程未提交审核";
     public static final String COMMITTED="课程已提交审核";
     public static final String EMPTY_COURSE_TEACH_PLAN="课程计划不能为空";
